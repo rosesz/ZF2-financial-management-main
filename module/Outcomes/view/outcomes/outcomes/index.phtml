@@ -1,1 +1,30 @@
-Action "index", controller "Outcomes", module "Outcomes".
+ <?php
+ // module/Outcomes/view/outcomes/outcomes/index.phtml:
+
+ $title = 'My outcomess';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('outcomes', array('action'=>'add'));?>">Add new outcomes</a>
+ </p>
+
+ <table class="table">
+ <tr>
+     <th>Amount</th>
+     <th>Category</th>
+     <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($outcomes as $outcome) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($outcome->amount);?></td>
+     <td><?php echo $this->escapeHtml($outcome->category);?></td>
+     <td>
+         <a href="<?php echo $this->url('outcomes',
+             array('action'=>'edit', 'id' => $outcome->id));?>">Edit</a>
+         <a href="<?php echo $this->url('outcomes',
+             array('action'=>'delete', 'id' => $outcome->id));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

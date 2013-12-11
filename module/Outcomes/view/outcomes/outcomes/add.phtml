@@ -1,3 +1,18 @@
-Module: Outcomes
-Controller: Outcomes
-Action: add
+<?php
+ // module/Outcomes/view/outcomes/outcomes/add.phtml:
+
+ $title = 'Add new outcome';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+ $form->setAttribute('action', $this->url('outcomes', array('action' => 'add')));
+ $form->prepare();
+
+ echo $this->form()->openTag($form);
+ echo $this->formHidden($form->get('id'));
+ echo $this->formRow($form->get('amount'));
+ echo $this->formRow($form->get('category'));
+ echo $this->formRow($form->get('date'));
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
