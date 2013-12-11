@@ -1,12 +1,5 @@
-Composer
-========
-
-    php composer.phar require zendframework/zftool:dev-master
-
-    vendor/bin/zf.php create module Nazwa_modułu
-
 ZendSkeletonApplication
------------------------
+=======================
 
 Introduction
 ------------
