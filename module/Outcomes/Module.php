@@ -26,21 +26,21 @@ class Module
 
     public function getServiceConfig()
     {
-         return array(
-             'factories' => array(
-                 'Outcomes\Model\OutcomesTable' =>  function($sm) {
-                     $tableGateway = $sm->get('OutcomesTableGateway');
-                     $table = new OutcomesTable($tableGateway);
-                     return $table;
-                 },
-                 'OutcomesTableGateway' => function ($sm) {
-                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                     $resultSetPrototype = new ResultSet();
-                     $resultSetPrototype->setArrayObjectPrototype(new Outcomes());
-                     return new TableGateway('outcomes', $dbAdapter, null, $resultSetPrototype);
-                 },
-             ),
-         );
+        return array(
+            'factories' => array(
+                'Outcomes\Model\OutcomesTable' =>  function($sm) {
+                    $tableGateway = $sm->get('OutcomesTableGateway');
+                    $table = new OutcomesTable($tableGateway);
+                    return $table;
+                },
+                'OutcomesTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Outcomes());
+                    return new TableGateway('outcomes', $dbAdapter, null, $resultSetPrototype);
+                },
+            ),
+        );
     }
 
 }

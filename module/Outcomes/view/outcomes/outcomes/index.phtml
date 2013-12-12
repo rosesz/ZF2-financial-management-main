@@ -1,30 +1,30 @@
- <?php
- // module/Outcomes/view/outcomes/outcomes/index.phtml:
+<?php
 
- $title = 'My outcomess';
- $this->headTitle($title);
- ?>
- <h1><?php echo $this->escapeHtml($title); ?></h1>
- <p>
-     <a href="<?php echo $this->url('outcomes', array('action'=>'add'));?>">Add new outcomes</a>
- </p>
-
- <table class="table">
- <tr>
-     <th>Amount</th>
-     <th>Category</th>
-     <th>&nbsp;</th>
- </tr>
- <?php foreach ($outcomes as $outcome) : ?>
- <tr>
-     <td><?php echo $this->escapeHtml($outcome->amount);?></td>
-     <td><?php echo $this->escapeHtml($outcome->category);?></td>
-     <td>
-         <a href="<?php echo $this->url('outcomes',
-             array('action'=>'edit', 'id' => $outcome->id));?>">Edit</a>
-         <a href="<?php echo $this->url('outcomes',
-             array('action'=>'delete', 'id' => $outcome->id));?>">Delete</a>
-     </td>
- </tr>
- <?php endforeach; ?>
- </table>
+$title = 'Moje wydatki';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('outcomes', array('action'=>'add'));?>">Dodaj nowy wydatek</a>
+</p>
+<table class="table">
+<tr>
+    <th>Kwota</th>
+    <th>Kategoria</th>
+    <th>Data</th>
+    <th>&nbsp;</th>
+</tr>
+<?php foreach ($outcomes as $outcome) : ?>
+<tr>
+    <td><?php echo $this->escapeHtml($outcome->amount);?></td>
+    <td><?php echo $this->escapeHtml($outcome->category);?></td>
+    <td><?php echo $this->escapeHtml($outcome->date);?></td>
+    <td>
+        <a href="<?php echo $this->url('outcomes',
+            array('action'=>'edit', 'id' => $outcome->id));?>">Edytuj</a>
+        <a href="<?php echo $this->url('outcomes',
+            array('action'=>'delete', 'id' => $outcome->id));?>">Usuń</a>
+    </td>
+</tr>
+<?php endforeach; ?>
+</table>

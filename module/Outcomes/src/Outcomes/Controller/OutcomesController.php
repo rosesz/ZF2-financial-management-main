@@ -13,32 +13,32 @@ class OutcomesController extends AbstractActionController
     protected $outcomesTable;
 
     public function indexAction()
-    {
-         return new ViewModel(array(
-             'outcomes' => $this->getOutcomesTable()->fetchAll(),
-         ));
+    {   
+        return new ViewModel(array(
+            'outcomes' => $this->getOutcomesTable()->fetchAll(),
+        ));
     }
 
     public function addAction()
     {
-         $form = new OutcomesForm();
-         $form->get('submit')->setValue('Add');
+        $form = new OutcomesForm($this->categoriesList());
+        $form->get('submit')->setValue('Add');
 
-         $request = $this->getRequest();
-         if ($request->isPost()) {
-             $outcomes = new Outcomes();
-             $form->setInputFilter($outcomes->getInputFilter());
-             $form->setData($request->getPost());
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $outcomes = new Outcomes();
+            $form->setInputFilter($outcomes->getInputFilter());
+            $form->setData($request->getPost());
 
-             if ($form->isValid()) {
-                 $outcomes->exchangeArray($form->getData());
-                 $this->getOutcomesTable()->saveOutcomes($outcomes);
+            if ($form->isValid()) {
+                $outcomes->exchangeArray($form->getData());
+                $this->getOutcomesTable()->saveOutcomes($outcomes);
 
-                 // Redirect to list of outcomess
-                 return $this->redirect()->toRoute('outcomes');
-             }
-         }
-         return array('form' => $form);
+                // Redirect to list of outcomess
+                return $this->redirect()->toRoute('outcomes');
+            }
+        }
+        return array('form' => $form);
 
     }
 
@@ -52,13 +52,25 @@ class OutcomesController extends AbstractActionController
         return new ViewModel();
     }
 
+    public function categoriesList()
+    {
+        $outcomes = $this->getOutcomesTable()->fetchAll();
+        $cat = array();
+        foreach ($outcomes as $row) {
+            $cat[$row->category] = $row->category;
+        }
+        $categories = array_values($cat); 
+
+        return \Zend\Json\Json::encode($categories, true);      
+    }
+
     public function getOutcomesTable()
     {
-         if (!$this->outcomesTable) {
-             $sm = $this->getServiceLocator();
-             $this->outcomesTable = $sm->get('Outcomes\Model\OutcomesTable');
-         }
-         return $this->outcomesTable;
+        if (!$this->outcomesTable) {
+            $sm = $this->getServiceLocator();
+            $this->outcomesTable = $sm->get('Outcomes\Model\OutcomesTable');
+        }
+        return $this->outcomesTable;
     }
 }
 
