@@ -124,6 +124,17 @@ class OutcomesController extends AbstractActionController
         return \Zend\Json\Json::encode($categories, true);      
     }
 
+    public function sumByCategories()
+    {
+        $outcomes = $this->getOutcomesTable()->fetchAll();
+        $sum = array();
+        foreach ($outcomes as $row) {
+            $sum[$row->category] = $sum[$row->category] + $row->amount;
+        }
+
+        return \Zend\Json\Json::encode($sum, true);    
+    }
+
     public function getOutcomesTable()
     {
         if (!$this->outcomesTable) {

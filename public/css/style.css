@@ -10,3 +10,9 @@ input {
 .delete-link {
   margin-left: 10px;
 }
+
+.charts-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
