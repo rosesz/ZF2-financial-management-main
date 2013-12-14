@@ -6,3 +6,7 @@ body {
 input {
   max-width: 196px !important;
 }
+
+.delete-link {
+  margin-left: 10px;
+}

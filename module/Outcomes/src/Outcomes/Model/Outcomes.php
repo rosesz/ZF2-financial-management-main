@@ -21,7 +21,12 @@ class Outcomes
         $this->category = (!empty($data['category'])) ? $data['category'] : null;
         $this->date     = (!empty($data['date'])) ? $data['date'] : null;
     }
-     
+
+    public function getArrayCopy()
+    {
+        return get_object_vars($this);
+    }
+
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception("Not used");

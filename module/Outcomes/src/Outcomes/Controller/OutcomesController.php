@@ -34,7 +34,7 @@ class OutcomesController extends AbstractActionController
                 $outcomes->exchangeArray($form->getData());
                 $this->getOutcomesTable()->saveOutcomes($outcomes);
 
-                // Redirect to list of outcomess
+                // Redirect to list of outcomes
                 return $this->redirect()->toRoute('outcomes');
             }
         }
@@ -44,12 +44,72 @@ class OutcomesController extends AbstractActionController
 
     public function editAction()
     {
-        return new ViewModel();
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('outcomes', array(
+                'action' => 'add'
+            ));
+        }
+
+        // Get the Outcome with the specified id.  An exception is thrown
+        // if it cannot be found, in which case go to the index page.
+        try {
+            $outcomes = $this->getOutcomesTable()->getOutcomes($id);
+        }
+        catch (\Exception $ex) {
+            return $this->redirect()->toRoute('outcomes', array(
+                'action' => 'index'
+            ));
+        }
+
+        $form  = new OutcomesForm();
+        $form->bind($outcomes);
+        $form->get('submit')->setAttribute('value', 'Edit');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setInputFilter($outcomes->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $this->getOutcomesTable()->saveOutcomes($outcomes);
+
+                // Redirect to list of outcomes
+                return $this->redirect()->toRoute('outcomes');
+            }
+        }
+
+        return array(
+            'id' => $id,
+            'form' => $form,
+        );
     }
 
     public function deleteAction()
     {
-        return new ViewModel();
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('outcomes');
+        }
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $this->getOutcomesTable()->deleteOutcomes($id);
+            }
+
+            // Redirect to list of outcomes
+            return $this->redirect()->toRoute('outcomes');
+        }
+
+        return array(
+            'id'    => $id,
+            'outcomes' => $this->getOutcomesTable()->getOutcomes($id)
+        );
     }
 
     public function categoriesList()

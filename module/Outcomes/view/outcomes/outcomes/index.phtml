@@ -21,8 +21,8 @@ $this->headTitle($title);
     <td><?php echo $this->escapeHtml($outcome->date);?></td>
     <td>
         <a href="<?php echo $this->url('outcomes',
-            array('action'=>'edit', 'id' => $outcome->id));?>">Edytuj</a>
-        <a href="<?php echo $this->url('outcomes',
+            array('action'=>'edit', 'id' => $outcome->id));?>">Edytuj</a> 
+        <a class="delete-link" href="<?php echo $this->url('outcomes',
             array('action'=>'delete', 'id' => $outcome->id));?>">Usuń</a>
     </td>
 </tr>
