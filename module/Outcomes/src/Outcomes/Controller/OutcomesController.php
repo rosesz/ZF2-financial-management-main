@@ -9,7 +9,6 @@ use Outcomes\Form\OutcomesForm;
 use Zend\Http\Client;
 use Zend\Http\Request;
 
-
 class OutcomesController extends AbstractActionController
 {
     protected $outcomesTable;
@@ -47,7 +46,6 @@ class OutcomesController extends AbstractActionController
 
     public function editAction()
     {
-        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('outcomes', array(

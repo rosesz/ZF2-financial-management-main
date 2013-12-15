@@ -16,3 +16,7 @@ input {
   margin: 0;
   list-style: none;
 }
+
+.panel {
+  min-height: 150px;
+}
