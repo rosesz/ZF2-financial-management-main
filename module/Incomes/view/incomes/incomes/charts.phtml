@@ -1,0 +1,40 @@
+<?php
+
+  $title = 'Generuj wykres dla przychodów';
+  $this->headTitle($title);
+?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+  $url = $this->url('incomes', array(
+      'action' => 'generateChart'
+  ));
+?>
+<form action="<?php echo $url; ?>" method="post">
+      <div class="form-group">
+        <label>
+          <span>Data początkowa</span>
+          <input name="startDate" class="form-control datepicker" autocomplete="off" value="" type="text">
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <span>Data końcowa</span>
+          <input name="endDate" class="form-control datepicker" autocomplete="off" value="" type="text">
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="type" id="categories" value="categories" checked>
+          Wykres od kategorii
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="type" id="days" value="days">
+          Wykres od dni
+        </label>
+      </div>
+      <input type="submit" class="btn btn-default" name="submit" value="Generate" />
+</form>

@@ -6,11 +6,14 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Outcomes\Model\Outcomes;
 use Outcomes\Form\OutcomesForm;
+use Zend\Http\Client;
+use Zend\Http\Request;
 
 
 class OutcomesController extends AbstractActionController
 {
     protected $outcomesTable;
+    protected $chartsGeneratorUrl = "http://localhost:8080/chart";
 
     public function indexAction()
     {   
@@ -63,7 +66,7 @@ class OutcomesController extends AbstractActionController
             ));
         }
 
-        $form  = new OutcomesForm();
+        $form  = new OutcomesForm($this->categoriesList());
         $form->bind($outcomes);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -112,6 +115,38 @@ class OutcomesController extends AbstractActionController
         );
     }
 
+    public function chartsAction()
+    {
+        return new ViewModel();
+    }
+
+    public function generateChartAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $startDate = $request->getPost('startDate');
+            $endDate = $request->getPost('endDate');
+            $type = $request->getPost('type');
+
+            if ($type == "categories") {
+                $data = $this->sumByCategories($startDate, $endDate);
+                $title = "Wydatki według kategorii";
+            }
+            elseif ($type == "days") {
+                $data = $this->sumByDays($startDate, $endDate);
+                $title = "Wydatki według dni";
+            }
+        }
+
+        $url = $this->getChartUrl($type, $data, $title);
+
+        return new ViewModel(array(
+            'url' => $url['url'],
+            'title' => $title
+        ));
+    }
+
     public function categoriesList()
     {
         $outcomes = $this->getOutcomesTable()->fetchAll();
@@ -124,12 +159,25 @@ class OutcomesController extends AbstractActionController
         return \Zend\Json\Json::encode($categories, true);      
     }
 
-    public function sumByCategories()
+    public function sumByCategories($startDate = "", $endDate = "")
     {
         $outcomes = $this->getOutcomesTable()->fetchAll();
         $sum = array();
         foreach ($outcomes as $row) {
-            $sum[$row->category] = $sum[$row->category] + $row->amount;
+            if ($this->isInDataRange($row->date, $startDate, $endDate))
+                $sum[$row->category] += $row->amount;
+        }
+
+        return \Zend\Json\Json::encode($sum, true);    
+    }
+
+    public function sumByDays($startDate = "", $endDate = "")
+    {
+        $outcomes = $this->getOutcomesTable()->fetchAll();
+        $sum = array();
+        foreach ($outcomes as $row) {
+            if ($this->isInDataRange($row->date, $startDate, $endDate))
+                $sum[$row->date] += $row->amount;
         }
 
         return \Zend\Json\Json::encode($sum, true);    
@@ -142,6 +190,47 @@ class OutcomesController extends AbstractActionController
             $this->outcomesTable = $sm->get('Outcomes\Model\OutcomesTable');
         }
         return $this->outcomesTable;
+    }
+
+    private function isInDataRange($givenDate, $startDate, $endDate)
+    {
+        $givenDate = strtotime($givenDate);
+        $startDate = strtotime($startDate);
+        $endDate = strtotime($endDate);
+
+        if (($startDate == "" || $startDate <= $givenDate) && ($endDate == "" || $endDate >= $givenDate))
+            return true;
+        else
+            return false;
+    }
+
+    private function prepareRequest($type, $data, $title)
+    {
+        $request = new Request();
+        $request->setMethod(Request::METHOD_POST);
+        $request->setUri($this->chartsGeneratorUrl);
+        $request->getHeaders()->addHeaders(array(
+            'content-type' => 'application/x-www-form-urlencoded',
+        ));
+        $request->getPost()->set('type', $type);
+        $request->getPost()->set('data', $data);
+        $request->getPost()->set('title', $title);
+
+        return $request;
+    }
+
+    private function getChartUrl($type, $data, $title) 
+    {
+        $newRequest = $this->prepareRequest($type, $data, $title);
+        $client = new Client();
+        $response = $client->dispatch($newRequest);
+
+        $url = "";
+        if ($response->isSuccess()) {
+            $url = \Zend\Json\Json::decode($response->getBody(), \Zend\Json\Json::TYPE_ARRAY); 
+        }
+
+        return $url;
     }
 }
 

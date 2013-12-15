@@ -44,8 +44,7 @@ class IncomesForm extends Form
                 'label' => 'Data',
             ),
             'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'datepicker',
+                'class' => 'form-control datepicker',
                 'autocomplete' => 'off',
             ),
         ));

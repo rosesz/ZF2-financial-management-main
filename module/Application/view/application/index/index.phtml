@@ -35,10 +35,8 @@
             </div>
             <div class="panel-body">
                     <ul class="charts-menu">
-                        <li><a href="">Wydatki według kategorii</a></li>
-                        <li><a href="">Przychody według kategorii</a></li>
-                        <li><a href="">Wydatki według dni</a></li>
-                        <li><a href="">Przychody według dni</a></li>
+                        <li><a href="<?php echo $this->url('outcomes', array('action' => 'charts')) ?>">Generuj wykresy dla wydatków</a></li>
+                        <li><a href="<?php echo $this->url('incomes', array('action' => 'charts')) ?>">Generuj wykresy dla przychodów</a></li>
                     </ul>
             </div>
         </div>
