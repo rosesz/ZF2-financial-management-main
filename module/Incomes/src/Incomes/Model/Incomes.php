@@ -12,6 +12,7 @@ class Incomes
     public $amount;
     public $category;
     public $date;
+    public $userId;
     protected $inputFilter;
 
     public function exchangeArray($data)
@@ -20,6 +21,7 @@ class Incomes
         $this->amount   = (!empty($data['amount'])) ? $data['amount'] : null;
         $this->category = (!empty($data['category'])) ? $data['category'] : null;
         $this->date     = (!empty($data['date'])) ? $data['date'] : null;
+        $this->userId   = (!empty($data['user_id'])) ? $data['user_id'] : null;
     }
 
     public function getArrayCopy()

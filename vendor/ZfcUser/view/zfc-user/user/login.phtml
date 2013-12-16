@@ -1,0 +1,36 @@
+<h1><?php echo "Logowanie" ?></h1>
+
+<?php
+    $form = $this->loginForm;
+    $form->prepare();
+    $form->setAttribute('action', $this->url('zfcuser/login'));
+    $form->setAttribute('method', 'post');
+?>
+
+<?php echo $this->form()->openTag($form) ?>
+
+    <?php echo $this->formElementErrors($form->get('identity')) ?>
+
+    <div class="form-group">
+        <?php echo $this->formLabel($form->get('identity')) ?>
+        <?php echo $this->formInput($form->get('identity')) ?>
+    </div>
+
+    <div class="form-group">
+        <?php echo $this->formLabel($form->get('credential')) ?>
+        <?php echo $this->formInput($form->get('credential')) ?>
+    </div>
+
+    <?php if ($this->redirect): ?>
+        <input type="hidden" name="redirect" value="<?php echo $this->escapeHtml($this->redirect) ?>" />
+    <?php endif ?>
+
+    <div class="form-group">
+        <?php echo $this->formButton($form->get('submit')) ?>
+    </div>
+
+<?php echo $this->form()->closeTag() ?>
+
+<?php if ($this->enableRegistration) : ?>
+<?php echo $this->translate('Nie masz konta?'); ?> <a href="<?php echo $this->url('zfcuser/register') . ($this->redirect ? '?redirect='.$this->redirect : '') ?>">Zarejestruj się</a>
+<?php endif; ?>

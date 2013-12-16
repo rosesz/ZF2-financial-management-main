@@ -17,13 +17,16 @@ class IncomesController extends AbstractActionController
 
     public function indexAction()
     {   
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
         return new ViewModel(array(
-            'incomes' => $this->getIncomesTable()->fetchAll(),
+            'incomes' => $this->getIncomesTable()->fetchAll($userId),
         ));
     }
 
     public function addAction()
     {
+        $this->checkAccess();
+
         $form = new IncomesForm($this->categoriesList());
         $form->get('submit')->setValue('Add');
 
@@ -35,7 +38,8 @@ class IncomesController extends AbstractActionController
 
             if ($form->isValid()) {
                 $incomes->exchangeArray($form->getData());
-                $this->getIncomesTable()->saveIncomes($incomes);
+                $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+                $this->getIncomesTable()->saveIncomes($incomes, $userId);
 
                 // Redirect to list of incomes
                 return $this->redirect()->toRoute('incomes');
@@ -47,13 +51,16 @@ class IncomesController extends AbstractActionController
 
     public function editAction()
     {
-        
+        $this->checkAccess();
+
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('incomes', array(
                 'action' => 'add'
             ));
         }
+        
+        $this->checkUserAccess($id);
 
         // Get the Income with the specified id.  An exception is thrown
         // if it cannot be found, in which case go to the index page.
@@ -76,7 +83,8 @@ class IncomesController extends AbstractActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getIncomesTable()->saveIncomes($incomes);
+                $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+                $this->getIncomesTable()->saveIncomes($incomes, $userId);
 
                 // Redirect to list of incomes
                 return $this->redirect()->toRoute('incomes');
@@ -91,10 +99,14 @@ class IncomesController extends AbstractActionController
 
     public function deleteAction()
     {
+        $this->checkAccess();
+
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('incomes');
         }
+        
+        $this->checkUserAccess($id);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -117,11 +129,15 @@ class IncomesController extends AbstractActionController
 
     public function chartsAction()
     {
+        $this->checkAccess();
+
         return new ViewModel();
     }
 
     public function generateChartAction()
     {
+        $this->checkAccess();
+
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -149,7 +165,8 @@ class IncomesController extends AbstractActionController
 
     public function categoriesList()
     {
-        $incomes = $this->getIncomesTable()->fetchAll();
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $incomes = $this->getIncomesTable()->fetchAll($userId);
         $cat = array();
         foreach ($incomes as $row) {
             $cat[$row->category] = $row->category;
@@ -161,7 +178,8 @@ class IncomesController extends AbstractActionController
 
     public function sumByCategories($startDate = "", $endDate = "")
     {
-        $incomes = $this->getIncomesTable()->fetchAll();
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $incomes = $this->getIncomesTable()->fetchAll($userId);
         $sum = array();
         foreach ($incomes as $row) {
             if ($this->isInDataRange($row->date, $startDate, $endDate))
@@ -173,7 +191,8 @@ class IncomesController extends AbstractActionController
 
     public function sumByDays($startDate = "", $endDate = "")
     {
-        $incomes = $this->getIncomesTable()->fetchAll();
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $incomes = $this->getIncomesTable()->fetchAll($userId);
         $sum = array();
         foreach ($incomes as $row) {
             if ($this->isInDataRange($row->date, $startDate, $endDate))
@@ -231,6 +250,23 @@ class IncomesController extends AbstractActionController
         }
 
         return $url;
+    }
+
+    private function checkAccess() 
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute('zfcuser/login');
+        }
+    }
+
+    private function checkUserAccess($id)
+    {
+        $income = $this->getIncomesTable()->getIncomes($id);
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        if ($userId != $income->userId) {
+            return $this->redirect()->toRoute('home');
+        }
     }
 }
 

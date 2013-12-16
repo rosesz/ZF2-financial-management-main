@@ -13,9 +13,9 @@ class OutcomesTable
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll()
+    public function fetchAll($userId)
     {
-        $resultSet = $this->tableGateway->select();
+        $resultSet = $this->tableGateway->select(array('user_id' => $userId));
         return $resultSet;
     }
 
@@ -30,12 +30,13 @@ class OutcomesTable
         return $row;
     }
 
-    public function saveOutcomes(Outcomes $outcomes)
+    public function saveOutcomes(Outcomes $outcomes, $userId)
     {
         $data = array(
             'amount' => $outcomes->amount,
             'category'  => $outcomes->category,
             'date'  => $outcomes->date,
+            'user_id'  => $userId,
         );
 
         $id = (int) $outcomes->id;

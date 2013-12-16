@@ -13,9 +13,9 @@ class IncomesTable
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll()
+    public function fetchAll($userId)
     {
-        $resultSet = $this->tableGateway->select();
+        $resultSet = $this->tableGateway->select(array('user_id' => $userId));
         return $resultSet;
     }
 
@@ -30,12 +30,13 @@ class IncomesTable
         return $row;
     }
 
-    public function saveIncomes(Incomes $incomes)
+    public function saveIncomes(Incomes $incomes, $userId)
     {
         $data = array(
             'amount' => $incomes->amount,
             'category'  => $incomes->category,
             'date'  => $incomes->date,
+            'user_id'  => $userId,
         );
 
         $id = (int) $incomes->id;
