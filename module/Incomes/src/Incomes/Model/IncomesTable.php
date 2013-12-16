@@ -3,7 +3,6 @@
 namespace Incomes\Model;
 
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Where;
 
 class IncomesTable
 {
@@ -16,9 +15,7 @@ class IncomesTable
 
     public function fetchAll($userId)
     {
-        $where = new Where();    
-        $where->equalTo('user_id', $userId);
-        $resultSet = $this->tableGateway->select($where);
+        $resultSet = $this->tableGateway->select(array('user_id' => $userId));
         return $resultSet;
     }
 

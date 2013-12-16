@@ -59,6 +59,8 @@ class IncomesController extends AbstractActionController
                 'action' => 'add'
             ));
         }
+        
+        $this->checkUserAccess($id);
 
         // Get the Income with the specified id.  An exception is thrown
         // if it cannot be found, in which case go to the index page.
@@ -103,6 +105,8 @@ class IncomesController extends AbstractActionController
         if (!$id) {
             return $this->redirect()->toRoute('incomes');
         }
+        
+        $this->checkUserAccess($id);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -252,6 +256,16 @@ class IncomesController extends AbstractActionController
     {
         if (!$this->zfcUserAuthentication()->hasIdentity()) {
             return $this->redirect()->toRoute('zfcuser/login');
+        }
+    }
+
+    private function checkUserAccess($id)
+    {
+        $income = $this->getIncomesTable()->getIncomes($id);
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        if ($userId != $income->userId) {
+            return $this->redirect()->toRoute('home');
         }
     }
 }

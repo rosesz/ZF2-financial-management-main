@@ -60,6 +60,8 @@ class OutcomesController extends AbstractActionController
                 'action' => 'add'
             ));
         }
+        
+        $this->checkUserAccess($id);
 
         // Get the Outcome with the specified id.  An exception is thrown
         // if it cannot be found, in which case go to the index page.
@@ -104,6 +106,8 @@ class OutcomesController extends AbstractActionController
         if (!$id) {
             return $this->redirect()->toRoute('outcomes');
         }
+
+        $this->checkUserAccess($id);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -253,6 +257,16 @@ class OutcomesController extends AbstractActionController
     {
         if (!$this->zfcUserAuthentication()->hasIdentity()) {
             return $this->redirect()->toRoute('zfcuser/login');
+        }
+    }
+
+    private function checkUserAccess($id)
+    {
+        $outcome = $this->getOutcomesTable()->getOutcomes($id);
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        if ($userId != $outcome->userId) {
+            return $this->redirect()->toRoute('home');
         }
     }
 }
