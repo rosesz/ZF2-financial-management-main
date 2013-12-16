@@ -18,8 +18,9 @@ class OutcomesController extends AbstractActionController
     {   
         $this->checkAccess();
 
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
         return new ViewModel(array(
-            'outcomes' => $this->getOutcomesTable()->fetchAll(),
+            'outcomes' => $this->getOutcomesTable()->fetchAll($userId),
         ));
     }
 
@@ -38,7 +39,8 @@ class OutcomesController extends AbstractActionController
 
             if ($form->isValid()) {
                 $outcomes->exchangeArray($form->getData());
-                $this->getOutcomesTable()->saveOutcomes($outcomes);
+                $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+                $this->getOutcomesTable()->saveOutcomes($outcomes, $userId);
 
                 // Redirect to list of outcomes
                 return $this->redirect()->toRoute('outcomes');
@@ -80,7 +82,8 @@ class OutcomesController extends AbstractActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getOutcomesTable()->saveOutcomes($outcomes);
+                $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+                $this->getOutcomesTable()->saveOutcomes($outcomes, $userId);
 
                 // Redirect to list of outcomes
                 return $this->redirect()->toRoute('outcomes');
@@ -159,7 +162,8 @@ class OutcomesController extends AbstractActionController
 
     public function categoriesList()
     {
-        $outcomes = $this->getOutcomesTable()->fetchAll();
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $outcomes = $this->getOutcomesTable()->fetchAll($userId);
         $cat = array();
         foreach ($outcomes as $row) {
             $cat[$row->category] = $row->category;
@@ -171,7 +175,8 @@ class OutcomesController extends AbstractActionController
 
     public function sumByCategories($startDate = "", $endDate = "")
     {
-        $outcomes = $this->getOutcomesTable()->fetchAll();
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $outcomes = $this->getOutcomesTable()->fetchAll($userId);
         $sum = array();
         foreach ($outcomes as $row) {
             if ($this->isInDataRange($row->date, $startDate, $endDate))
@@ -183,7 +188,8 @@ class OutcomesController extends AbstractActionController
 
     public function sumByDays($startDate = "", $endDate = "")
     {
-        $outcomes = $this->getOutcomesTable()->fetchAll();
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $outcomes = $this->getOutcomesTable()->fetchAll($userId);
         $sum = array();
         foreach ($outcomes as $row) {
             if ($this->isInDataRange($row->date, $startDate, $endDate))

@@ -3,6 +3,7 @@
 namespace Outcomes\Model;
 
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Where;
 
 class OutcomesTable
 {
@@ -13,9 +14,11 @@ class OutcomesTable
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll()
+    public function fetchAll($userId)
     {
-        $resultSet = $this->tableGateway->select();
+        $where = new Where();    
+        $where->equalTo('user_id', $userId);
+        $resultSet = $this->tableGateway->select($where);
         return $resultSet;
     }
 
@@ -30,12 +33,13 @@ class OutcomesTable
         return $row;
     }
 
-    public function saveOutcomes(Outcomes $outcomes)
+    public function saveOutcomes(Outcomes $outcomes, $userId)
     {
         $data = array(
             'amount' => $outcomes->amount,
             'category'  => $outcomes->category,
             'date'  => $outcomes->date,
+            'user_id'  => $userId,
         );
 
         $id = (int) $outcomes->id;

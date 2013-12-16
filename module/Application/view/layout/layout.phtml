@@ -42,12 +42,12 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><a href="<?php echo $this->url('home') ?>">Home</a></li>
-                        <li><a href="<?php echo $this->url('outcomes') ?>" >Wydatki</a></li>
-                        <li><a href="<?php echo $this->url('incomes') ?>">Przychody</a></li>
                         <?php if(!$this->zfcUserIdentity()): ?>
                             <li><a href="<?php echo $this->url('zfcuser/login') ?>">Zaloguj</a></li>
                             <li><a href="<?php echo $this->url('zfcuser/register') ?>">Rejestracja</a></li>
                         <?php else: ?>
+                            <li><a href="<?php echo $this->url('outcomes') ?>" >Wydatki</a></li>
+                            <li><a href="<?php echo $this->url('incomes') ?>">Przychody</a></li>
                             <li><a href="<?php echo $this->url('zfcuser') ?>">Moje konto</a></li>
                             <li><a href="<?php echo $this->url('zfcuser/logout') ?>">Wyloguj</a></li>
                         <?php endif?>
