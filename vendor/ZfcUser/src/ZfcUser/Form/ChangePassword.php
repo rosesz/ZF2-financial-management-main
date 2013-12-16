@@ -37,6 +37,7 @@ class ChangePassword extends ProvidesEventsForm
             ),
             'attributes' => array(
                 'type' => 'password',
+                'class' => 'form-control',
             ),
         ));
 
@@ -47,6 +48,7 @@ class ChangePassword extends ProvidesEventsForm
             ),
             'attributes' => array(
                 'type' => 'password',
+                'class' => 'form-control',
             ),
         ));
 
@@ -57,6 +59,7 @@ class ChangePassword extends ProvidesEventsForm
             ),
             'attributes' => array(
                 'type' => 'password',
+                'class' => 'form-control',
             ),
         ));
 
@@ -65,6 +68,7 @@ class ChangePassword extends ProvidesEventsForm
             'attributes' => array(
                 'value' => 'Submit',
                 'type'  => 'submit'
+                'class' => 'btn btn-default',
             ),
         ));
 

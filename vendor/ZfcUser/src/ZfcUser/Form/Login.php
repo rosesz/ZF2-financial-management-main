@@ -26,7 +26,8 @@ class Login extends ProvidesEventsForm
                 'label' => '',
             ),
             'attributes' => array(
-                'type' => 'text'
+                'type' => 'text',
+                'class' => 'form-control',
             ),
         ));
 
@@ -41,10 +42,11 @@ class Login extends ProvidesEventsForm
         $this->add(array(
             'name' => 'credential',
             'options' => array(
-                'label' => 'Password',
+                'label' => 'Hasło',
             ),
             'attributes' => array(
                 'type' => 'password',
+                'class' => 'form-control',
             ),
         ));
 
@@ -62,6 +64,7 @@ class Login extends ProvidesEventsForm
             ->setLabel('Sign In')
             ->setAttributes(array(
                 'type'  => 'submit',
+                'class' => 'btn btn-default',
             ));
 
         $this->add($submitElement, array(

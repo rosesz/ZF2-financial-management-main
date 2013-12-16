@@ -30,6 +30,7 @@ class ChangeEmail extends ProvidesEventsForm
             ),
             'attributes' => array(
                 'type' => 'text',
+                'class' => 'form-control',
             ),
         ));
 
@@ -40,6 +41,7 @@ class ChangeEmail extends ProvidesEventsForm
             ),
             'attributes' => array(
                 'type' => 'text',
+                'class' => 'form-control',
             ),
         ));
 
@@ -50,6 +52,7 @@ class ChangeEmail extends ProvidesEventsForm
             ),
             'attributes' => array(
                 'type' => 'password',
+                'class' => 'form-control',
             ),
         ));
 
