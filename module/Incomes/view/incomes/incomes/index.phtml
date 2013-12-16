@@ -1,0 +1,30 @@
+<?php
+
+    $title = 'Moje przychody';
+    $this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('incomes', array('action'=>'add'));?>">Dodaj nowy przychód</a>
+</p>
+<table class="table">
+<tr>
+    <th>Kwota</th>
+    <th>Kategoria</th>
+    <th>Data</th>
+    <th>&nbsp;</th>
+</tr>
+<?php foreach ($incomes as $income) : ?>
+<tr>
+    <td><?php echo $this->escapeHtml($income->amount);?></td>
+    <td><?php echo $this->escapeHtml($income->category);?></td>
+    <td><?php echo $this->escapeHtml($income->date);?></td>
+    <td>
+        <a href="<?php echo $this->url('incomes',
+            array('action'=>'edit', 'id' => $income->id));?>">Edytuj</a> 
+        <a class="delete-link" href="<?php echo $this->url('incomes',
+            array('action'=>'delete', 'id' => $income->id));?>">Usuń</a>
+    </td>
+</tr>
+<?php endforeach; ?>
+</table>

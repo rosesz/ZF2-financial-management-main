@@ -1,0 +1,25 @@
+<?php
+
+  $title = 'Usuń wydatek';
+  $this->headTitle($title);
+?>
+<h1>Potwierdź usunięcie:</h1>
+
+<p>
+    Kwota: <b><?php echo $this->escapeHtml($outcomes->amount); ?></b><br />
+    Kategoria: <b><?php echo $this->escapeHtml($outcomes->category); ?></b><br />
+    Data: <b><?php echo $this->escapeHtml($outcomes->date); ?></b>
+</p>
+<?php
+  $url = $this->url('outcomes', array(
+      'action' => 'delete',
+      'id'     => $this->id,
+  ));
+?>
+<form action="<?php echo $url; ?>" method="post">
+  <div>
+      <input type="hidden" name="id" value="<?php echo (int) $outcomes->id; ?>" />
+      <input type="submit" class="btn btn-default" name="del" value="Yes" />
+      <input type="submit" class="btn btn-default" name="del" value="No" />
+  </div>
+</form>
