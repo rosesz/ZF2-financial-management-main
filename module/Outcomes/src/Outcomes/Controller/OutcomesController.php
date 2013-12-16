@@ -16,6 +16,8 @@ class OutcomesController extends AbstractActionController
 
     public function indexAction()
     {   
+        $this->checkAccess();
+
         return new ViewModel(array(
             'outcomes' => $this->getOutcomesTable()->fetchAll(),
         ));
@@ -23,6 +25,8 @@ class OutcomesController extends AbstractActionController
 
     public function addAction()
     {
+        $this->checkAccess();
+
         $form = new OutcomesForm($this->categoriesList());
         $form->get('submit')->setValue('Add');
 
@@ -46,6 +50,8 @@ class OutcomesController extends AbstractActionController
 
     public function editAction()
     {
+        $this->checkAccess();
+
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('outcomes', array(
@@ -89,6 +95,8 @@ class OutcomesController extends AbstractActionController
 
     public function deleteAction()
     {
+        $this->checkAccess();
+
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('outcomes');
@@ -115,11 +123,15 @@ class OutcomesController extends AbstractActionController
 
     public function chartsAction()
     {
+        $this->checkAccess();
+
         return new ViewModel();
     }
 
     public function generateChartAction()
     {
+        $this->checkAccess();
+
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -229,6 +241,13 @@ class OutcomesController extends AbstractActionController
         }
 
         return $url;
+    }
+
+    private function checkAccess() 
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute('zfcuser/login');
+        }
     }
 }
 
