@@ -17,6 +17,10 @@ class IncomesController extends AbstractActionController
 
     public function indexAction()
     {   
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
+        
         $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
         return new ViewModel(array(
             'incomes' => $this->getIncomesTable()->fetchAll($userId),
@@ -25,7 +29,9 @@ class IncomesController extends AbstractActionController
 
     public function addAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $form = new IncomesForm($this->categoriesList());
         $form->get('submit')->setValue('Add');
@@ -51,7 +57,9 @@ class IncomesController extends AbstractActionController
 
     public function editAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -60,7 +68,9 @@ class IncomesController extends AbstractActionController
             ));
         }
         
-        $this->checkUserAccess($id);
+        if ($this->canNotAccess($id)) {
+            return $this->canNotAccess($id);
+        }
 
         // Get the Income with the specified id.  An exception is thrown
         // if it cannot be found, in which case go to the index page.
@@ -99,14 +109,18 @@ class IncomesController extends AbstractActionController
 
     public function deleteAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('incomes');
         }
         
-        $this->checkUserAccess($id);
+        if ($this->canNotAccess($id)) {
+            return $this->canNotAccess($id);
+        }
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -129,14 +143,18 @@ class IncomesController extends AbstractActionController
 
     public function chartsAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         return new ViewModel();
     }
 
     public function generateChartAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $request = $this->getRequest();
 
@@ -252,14 +270,16 @@ class IncomesController extends AbstractActionController
         return $url;
     }
 
-    private function checkAccess() 
+    private function isNotLogged() 
     {
         if (!$this->zfcUserAuthentication()->hasIdentity()) {
             return $this->redirect()->toRoute('zfcuser/login');
         }
+        else
+            false;
     }
 
-    private function checkUserAccess($id)
+    private function canNotAccess($id)
     {
         $income = $this->getIncomesTable()->getIncomes($id);
         $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
@@ -267,6 +287,8 @@ class IncomesController extends AbstractActionController
         if ($userId != $income->userId) {
             return $this->redirect()->toRoute('home');
         }
+        else
+            false;
     }
 }
 

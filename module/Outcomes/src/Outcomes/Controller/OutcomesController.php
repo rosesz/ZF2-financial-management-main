@@ -16,7 +16,9 @@ class OutcomesController extends AbstractActionController
 
     public function indexAction()
     {   
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
         return new ViewModel(array(
@@ -26,7 +28,9 @@ class OutcomesController extends AbstractActionController
 
     public function addAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $form = new OutcomesForm($this->categoriesList());
         $form->get('submit')->setValue('Add');
@@ -52,7 +56,9 @@ class OutcomesController extends AbstractActionController
 
     public function editAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -60,8 +66,10 @@ class OutcomesController extends AbstractActionController
                 'action' => 'add'
             ));
         }
-        
-        $this->checkUserAccess($id);
+
+        if ($this->canNotAccess($id)) {
+            return $this->canNotAccess($id);
+        }
 
         // Get the Outcome with the specified id.  An exception is thrown
         // if it cannot be found, in which case go to the index page.
@@ -100,14 +108,18 @@ class OutcomesController extends AbstractActionController
 
     public function deleteAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('outcomes');
         }
 
-        $this->checkUserAccess($id);
+        if ($this->canNotAccess($id)) {
+            return $this->canNotAccess($id);
+        }
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -130,14 +142,18 @@ class OutcomesController extends AbstractActionController
 
     public function chartsAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         return new ViewModel();
     }
 
     public function generateChartAction()
     {
-        $this->checkAccess();
+        if ($this->isNotLogged()) {
+            return ($this->isNotLogged());
+        }
 
         $request = $this->getRequest();
 
@@ -253,14 +269,16 @@ class OutcomesController extends AbstractActionController
         return $url;
     }
 
-    private function checkAccess() 
+    private function isNotLogged() 
     {
         if (!$this->zfcUserAuthentication()->hasIdentity()) {
             return $this->redirect()->toRoute('zfcuser/login');
         }
+        else
+            false;
     }
 
-    private function checkUserAccess($id)
+    private function canNotAccess($id)
     {
         $outcome = $this->getOutcomesTable()->getOutcomes($id);
         $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
@@ -268,6 +286,8 @@ class OutcomesController extends AbstractActionController
         if ($userId != $outcome->userId) {
             return $this->redirect()->toRoute('home');
         }
+        else
+            false;
     }
 }
 
